@@ -30,7 +30,7 @@ class _WeatherAppState extends State<WeatherApp> {
       routerConfig: _router.config(),
       title: 'Погода',
       theme: lightTheme,
-      //home: const HomeScreen(title: 'Погода'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
