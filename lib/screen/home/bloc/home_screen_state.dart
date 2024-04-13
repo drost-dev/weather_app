@@ -16,9 +16,16 @@ class HomeScreenLoading extends HomeScreenState {
   List<Object> get props => [];
 }
 
+class HomeScreenFirstLoaded extends HomeScreenState {
+  HomeScreenFirstLoaded();
+  
+  @override
+  List<Object> get props => [];
+}
+
 class HomeScreenLoaded extends HomeScreenState {
-  HomeScreenLoaded({this.firstLaunch = false});
-  bool firstLaunch;
+  HomeScreenLoaded({required this.formattedDate});
+  String formattedDate;
   
   @override
   List<Object> get props => [];

@@ -28,7 +28,7 @@ class _WeatherAppState extends State<WeatherApp> {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: _router.config(),
-      title: 'Погода',
+      title: 'Weather',
       theme: lightTheme,
       debugShowCheckedModeBanner: false,
     );
