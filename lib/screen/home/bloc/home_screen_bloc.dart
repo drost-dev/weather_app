@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'home_screen_event.dart';
@@ -13,6 +15,14 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   FutureOr<void> _load(HomeScreenEvent event, Emitter<HomeScreenState> emit) async {
     emit(HomeScreenLoading());
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    emit(HomeScreenLoaded(firstLaunch: prefs.getBool('firstLaunch') ?? false));
+    if (prefs.getBool('firstLaunch')!)
+    {
+      emit(HomeScreenFirstLoaded());
+    }
+    else
+    {
+      String formattedDate = DateFormat('EEEE, d MMM, H:mm').format(DateTime.now());
+      emit(HomeScreenLoaded(formattedDate: formattedDate));
+    } 
   }
 }

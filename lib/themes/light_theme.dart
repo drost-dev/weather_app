@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 var lightTheme = ThemeData(
+  fontFamily: GoogleFonts.balooBhai2().fontFamily,
   colorScheme: ColorScheme.fromSeed(
     seedColor: const Color.fromARGB(147, 210, 240, 255),
   ),

@@ -70,22 +70,22 @@ class _HomeScreenState extends State<HomeScreen> {
             centerTitle: true,
             title: GestureDetector(
                 child: const Text(
-              "ГОРОД",
+              "City",
             )),
           ),
           backgroundColor: Colors.white.withOpacity(0.2),
           body: BlocBuilder(
             bloc: _homeScreenBloc,
             builder: (context, state) {
-              if (state is HomeScreenLoaded && state.firstLaunch) {
+              if (state is HomeScreenFirstLoaded) {
                 AutoRouter.of(context).replaceNamed('/start');
                 return const Placeholder();
-              } else if (state is HomeScreenLoaded && !state.firstLaunch) {
-                return const Center(
+              } else if (state is HomeScreenLoaded) {
+                return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('test text'),
+                    children: <Widget>[
+                      Text(state.formattedDate),
                     ],
                   ),
                 );
@@ -105,6 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
             },
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: theme.colorScheme.onSecondary.withOpacity(0.8),
+            onPressed: () {},
+            tooltip: 'Increment',
+            child: const Icon(Icons.add),
           ),
         ),
       ],
