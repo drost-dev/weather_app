@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,11 +29,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Stack(
       children: [
-        Image.asset(
-          'assets/sky.png',
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          fit: BoxFit.cover,
+        ImageFiltered(
+          imageFilter: ImageFilter.blur(
+            sigmaX: 5,
+            sigmaY: 5,
+          ),
+          child: Image.asset(
+            'assets/sky.png',
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+          ),
         ),
         Scaffold(
           appBar: AppBar(
@@ -59,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
             backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
-            //Theme.of(context).colorScheme.inversePrimary.withOpacity(0),
             centerTitle: true,
             title: GestureDetector(
                 child: const Text(
@@ -74,16 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 AutoRouter.of(context).replaceNamed('/start');
                 return const Placeholder();
               } else if (state is HomeScreenLoaded && !state.firstLaunch) {
-                return Center(
+                return const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Image.asset(
-                      //   'assets/sky.png',
-                      //   height: MediaQuery.of(context).size.height,
-                      //   width: MediaQuery.of(context).size.width,
-                      //   fit: BoxFit.cover,
-                      // ),
+                    children: [
+                      Text('test text'),
                     ],
                   ),
                 );
@@ -103,11 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
             },
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {},
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
           ),
         ),
       ],
