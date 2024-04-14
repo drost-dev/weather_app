@@ -24,15 +24,18 @@ class HomeScreenFirstLoaded extends HomeScreenState {
 }
 
 class HomeScreenLoaded extends HomeScreenState {
-  HomeScreenLoaded({required this.formattedDate});
-  final String formattedDate;
+  HomeScreenLoaded({required this.nowForecast, required this.weatherData});
+  final NowForecast nowForecast;
+  final WeatherForecastData weatherData;
+  
   
   @override
-  List<Object> get props => [formattedDate];
+  List<Object> get props => [nowForecast, weatherData];
 }
 
 class HomeScreenLoadingError extends HomeScreenState {
-  HomeScreenLoadingError();
+  HomeScreenLoadingError(this.error);
+  final error;
   
   @override
   List<Object> get props => [];
