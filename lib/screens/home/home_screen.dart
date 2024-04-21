@@ -3,8 +3,12 @@ import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weather_app/screens/city_selection_screen/city_selection_screen.dart';
 import 'package:weather_app/screens/home/bloc/home_screen_bloc.dart';
 import 'package:weather_app/screens/home/widgets/hour_card_list.dart';
+
+import 'widgets/main_forecast.dart';
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -16,11 +20,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _homeScreenBloc = HomeScreenBloc();
+  late String cityName = "";
 
   @override
   void initState() {
     // TODO: implement initState
     _homeScreenBloc.add(HomeScreenLoad());
+    _fetchCityName();
     super.initState();
   }
 
@@ -49,174 +55,166 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context) {
                   return const [
                     PopupMenuItem(
-                      value: '123',
-                      child: Text('1'),
+                      value: 'clear',
+                      child: Text('Clear Data'),
                     ),
-                    PopupMenuItem(
+                    /*PopupMenuItem(
                       value: 'sdgusg',
                       child: Text('2'),
                     ),
                     PopupMenuItem(
                       value: 'test3',
                       child: Text('3'),
-                    ),
+                    ),*/
                   ];
                 },
-                onSelected: (value) {
-                  print(value);
+                onSelected: (value) async {
+                  if (value == 'clear') {
+                    var prefs = await SharedPreferences.getInstance();
+                    await prefs.clear();
+                  }
                 },
               ),
             ],
             backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
             centerTitle: true,
             title: GestureDetector(
-              child: const Text(
-                "City",
+              //TODO: сделать выбор города
+              onTap: () {
+                showModalBottomSheet(
+                  backgroundColor: Colors.white.withOpacity(0),
+                  context: context,
+                  builder: (context) {
+                    return const CitySelectionScreen();
+                  },
+                  scrollControlDisabledMaxHeightRatio: 0.9,
+                ).whenComplete(() {
+                  _homeScreenBloc.add(HomeScreenLoad());
+                  _fetchCityName();
+                });
+              },
+              child: Text(
+                cityName,
               ),
             ),
           ),
           backgroundColor: Colors.white.withOpacity(0.2),
-          body: BlocBuilder(
-            bloc: _homeScreenBloc,
-            builder: (context, state) {
-              if (state is HomeScreenFirstLoaded) {
-                // первый заход в приложение, приветствие
-                AutoRouter.of(context).replaceNamed('/start');
-                return const Placeholder();
-              } else if (state is HomeScreenLoaded) {
-                // обыденный запуск приложения
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            state.nowForecast.formattedNowTime,
-                            style: theme.textTheme.headlineMedium!
-                                .apply(fontSizeFactor: 1.8),
-                          ),
-                          Text(
-                            state.nowForecast.formattedNowDate,
-                            style: theme.textTheme.titleLarge!
-                                .apply(fontWeightDelta: -10),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Sunrise:',
-                                style: theme.textTheme.titleMedium,
-                              ),
-                              Text(
-                                state.nowForecast.sunriseTime,
-                                style: theme.textTheme.titleMedium!
-                                    .apply(fontWeightDelta: 200),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                state.nowForecast.temp,
-                                style: theme.textTheme.headlineLarge,
-                              ),
-                              Text(
-                                "Feels like: ${state.nowForecast.feelsLikeTemp}",
-                                style: theme.textTheme.displayMedium!.apply(fontSizeFactor: 0.4),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Sunset:',
-                                style: theme.textTheme.titleMedium,
-                              ),
-                              Text(
-                                state.nowForecast.sunsetTime,
-                                style: theme.textTheme.titleMedium!
-                                    .apply(fontWeightDelta: 200),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ImageIcon(
-                            NetworkImage(
-                              state.nowForecast.weatherIcon,
-                            ),
-                            size: 100,
-                          ),
-                          Text(
-                            state.nowForecast.weatherDescription,
-                            style: theme.textTheme.titleLarge,
-                          ),
-                          Text(
-                            'Wind: ${state.nowForecast.windSpeed}, ${state.nowForecast.windDirection}',
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ],
-                      ),
-                      HourCardList(weatherData: state.weatherData),
-                    ],
-                  ),
-                );
-              } else if (state is HomeScreenInitializing) {
-                // инициализация приложения (можно сделать подобие сплеш скрина)
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Initializing app...',
-                      ),
-                    ],
-                  ),
-                );
-              } else if (state is HomeScreenLoading) {
-                // подгрузка инфы
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (state is HomeScreenLoadingError) {
-                // ошибка в бизнес логике
-                return Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: Text(state.error.toString()),
-                );
-              } else {
-                // непредвиденный стейт (?)
-                return const Center(
-                  child: Icon(
-                    Icons.error_outline,
-                    size: 50,
-                    color: Colors.red,
-                  ),
-                );
-              }
+          body: RefreshIndicator(
+            //TODO: аааааа индикатор перезагрузки сделать
+            onRefresh: () async {
+              return Future.delayed(const Duration(milliseconds: 500));
             },
+            child: BlocBuilder(
+              bloc: _homeScreenBloc,
+              builder: (context, state) {
+                if (state is HomeScreenFirstLoaded) {
+                  // первый заход в приложение, приветствие
+                  AutoRouter.of(context).replaceNamed('/start');
+                  return Container(
+                    color: theme.colorScheme.primaryContainer,
+                  );
+                } else if (state is HomeScreenLoaded) {
+                  // обыденный запуск приложения, прогноз на текущее время
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        MainForecast(
+                          forecast: state.nowForecast,
+                        ),
+                        HourCardList(
+                          weatherData: state.weatherData,
+                          bloc: _homeScreenBloc,
+                          initHour: DateTime.now().hour,
+                        ),
+                        const SizedBox(
+                          width: 1,
+                          height: 1,
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (state is HomeScreenLoadedHour) {
+                  //отображение прогноза на выбранный час
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        MainForecast(
+                          forecast: state.hourForecast,
+                        ),
+                        HourCardList(
+                          weatherData: state.weatherData,
+                          bloc: _homeScreenBloc,
+                          initHour: DateTime.now().hour,
+                        ),
+                        const SizedBox(
+                          width: 1,
+                          height: 1,
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (state is HomeScreenInitializing) {
+                  // инициализация приложения (можно сделать подобие сплеш скрина)
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Initializing app...',
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (state is HomeScreenLoading) {
+                  // подгрузка инфы
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is HomeScreenLoadingError) {
+                  // ошибка в бизнес логике
+                  return Container(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    child: Text(state.error.toString()),
+                  );
+                } else {
+                  // непредвиденный стейт (?)
+                  return const Center(
+                    child: Icon(
+                      Icons.error_outline,
+                      size: 50,
+                      color: Colors.red,
+                    ),
+                  );
+                }
+              },
+            ),
           ),
           floatingActionButton: FloatingActionButton(
+            mini: true,
             backgroundColor: theme.colorScheme.onSecondary.withOpacity(0.8),
-            onPressed: () {},
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
+            onPressed: () {
+              _homeScreenBloc.add(HomeScreenLoad());
+              _fetchCityName();
+            },
+            tooltip: 'Show Now Forecast',
+            child: const Icon(Icons.refresh_outlined),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _fetchCityName() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      if (prefs.containsKey('cityName')) {
+        cityName = prefs.getString('cityName')!;
+      } else {
+        cityName = "Not selected";
+      }
+    });
   }
 }

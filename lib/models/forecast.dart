@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:weather_app/models/weather_forecast_data.dart';
 
-class NowForecast extends Equatable {
-  final String formattedNowTime;
-  final String formattedNowDate;
+class Forecast extends Equatable {
+  final String formattedTime;
+  final String formattedDate;
   final String temp;
   final String feelsLikeTemp;
   final String sunriseTime;
@@ -13,9 +12,9 @@ class NowForecast extends Equatable {
   final String windSpeed;
   final String windDirection;
 
-  const NowForecast({
-    required this.formattedNowTime,
-    required this.formattedNowDate,
+  const Forecast({
+    required this.formattedTime,
+    required this.formattedDate,
     required this.temp,
     required this.feelsLikeTemp,
     required this.sunriseTime,
@@ -28,8 +27,8 @@ class NowForecast extends Equatable {
 
   @override
   List<Object> get props => [
-        formattedNowTime,
-        formattedNowDate,
+        formattedTime,
+        formattedDate,
         temp,
         feelsLikeTemp,
         sunriseTime,

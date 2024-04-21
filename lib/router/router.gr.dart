@@ -15,6 +15,17 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    CitySelectionRoute.name: (routeData) {
+      final args = routeData.argsAs<CitySelectionRouteArgs>(
+          orElse: () => const CitySelectionRouteArgs());
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: CitySelectionScreen(
+          key: args.key,
+          firstLaunch: args.firstLaunch,
+        ),
+      );
+    },
     HomeRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -28,6 +39,44 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
   };
+}
+
+/// generated route for
+/// [CitySelectionScreen]
+class CitySelectionRoute extends PageRouteInfo<CitySelectionRouteArgs> {
+  CitySelectionRoute({
+    Key? key,
+    bool firstLaunch = false,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CitySelectionRoute.name,
+          args: CitySelectionRouteArgs(
+            key: key,
+            firstLaunch: firstLaunch,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CitySelectionRoute';
+
+  static const PageInfo<CitySelectionRouteArgs> page =
+      PageInfo<CitySelectionRouteArgs>(name);
+}
+
+class CitySelectionRouteArgs {
+  const CitySelectionRouteArgs({
+    this.key,
+    this.firstLaunch = false,
+  });
+
+  final Key? key;
+
+  final bool firstLaunch;
+
+  @override
+  String toString() {
+    return 'CitySelectionRouteArgs{key: $key, firstLaunch: $firstLaunch}';
+  }
 }
 
 /// generated route for

@@ -5,11 +5,26 @@ import 'package:weather_app/themes/light_theme.dart';
 
 void main() async {
   runApp(const WeatherApp());
-  
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   if (!prefs.containsKey('firstLaunch'))
   {
     prefs.setBool('firstLaunch', true);
+  }
+
+  if (!prefs.containsKey('lat'))
+  {
+    prefs.setDouble('lat', 0);
+  }
+
+  if (!prefs.containsKey('lon'))
+  {
+    prefs.setDouble('lon', 0);
+  }
+  
+  if (!prefs.containsKey('cityName'))
+  {
+    prefs.setString('cityName', "Not selected");
   }
 }
 

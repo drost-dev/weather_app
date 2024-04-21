@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 class WeatherCastRepository {
   static Future<Map<String, dynamic>> getCoordinatesApiData(String query) async {
     final dio = Dio();
-    final resp = await dio.get('https://geocoding-api.open-meteo.com/v1/search?name=$query&count=1&language=en&format=json');
+    final resp = await dio.get('https://geocoding-api.open-meteo.com/v1/search?name=$query&count=10&language=en&format=json');
     Map<String, dynamic> apiData = resp.data;
     return apiData;
   }

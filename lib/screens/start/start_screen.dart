@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weather_app/router/router.dart';
 
 @RoutePage()
 class StartScreen extends StatelessWidget {
@@ -37,7 +38,7 @@ class StartScreen extends StatelessWidget {
               onPressed: () async {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setBool('firstLaunch', false);
-                AutoRouter.of(context).replaceNamed('/');
+                AutoRouter.of(context).replace(CitySelectionRoute(firstLaunch: true));
               },
               style: TextButton.styleFrom(
                 backgroundColor: theme.colorScheme.onPrimary,
